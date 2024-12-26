@@ -8,48 +8,58 @@ use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
-    public function listStudent()
+    public function index()
     {
-        return response()->json(Student::all());
+        $students = Student::all();
+        return response()->json($students);
     }
 
-    public function formStudent(Request $request, $action, ?Student $student)
+    public function store(Request $request)
     {
-
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'address' => 'required|string|max:500',
-            'contact_number' => 'required|string|max:15'
+            'address' => 'required|string|max:255',
+            'contact_number' => 'required|string|max:15',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['message' => '404']);
-        }
+        $student = Student::create([
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'address' => $validated['address'],
+            'contact_number' => $validated['contact_number'],
+            'registration_number' => 'REG-' . strtoupper(uniqid()),
+        ]);
 
-        $validatedData = $validator->validated();
-
-        if ($action == 'create') {
-            $student = new Student;
-
-            $lastStudent = Student::latest('id')->first();
-            $nextRegistrationNumber = $lastStudent ? intval($lastStudent->registration_number) + 1 : 1;
-            $student->registration_number = str_pad($nextRegistrationNumber, 5, '0', STR_PAD_LEFT);
-        }
-
-        $student->first_name = $validatedData['first_name'];
-        $student->last_name = $validatedData['last_name'];
-        $student->address = $validatedData['address'];
-        $student->contact_number = $validatedData['contact_number'];
-        $student->save();
-
-        return response()->json(['message' => 'Student save successfully']);
+        return response()->json($student, 201);
     }
 
-    public function destroy(Student $student)
+    public function update(Request $request, $id)
     {
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'contact_number' => 'required|string|max:15',
+        ]);
+
+        $student = Student::findOrFail($id);
+        $student->update($validated);
+
+        return response()->json(['message' => 'Student updated successfully!', 'student' => $student]);
+    }
+
+    public function destroy($id)
+    {
+        $student = Student::findOrFail($id);
         $student->delete();
 
-        return response()->json(['message' => 'Student deleted successfully']);
+        return response()->json(['message' => 'Student deleted successfully!']);
+    }
+
+    public function show($id)
+    {
+        $student = Student::findOrFail($id);
+        return response()->json($student);
     }
 }

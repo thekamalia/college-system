@@ -26,29 +26,43 @@
             </form>
         </div>
     </div>
+
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            // Get the email and password values
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
+            // Send login request
             fetch('/api/login', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                         email,
                         password
-                    })
-                }).then(response => response.json())
+                    }),
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
                 .then(data => {
                     if (data.token) {
+                        console.log('Login successful, token:', data.token);
                         localStorage.setItem('token', data.token);
                         window.location.href = 'students.html';
                     } else {
+                        console.log('Login failed:', data.message || 'Unknown error');
                         alert(data.message || 'Login failed!');
                     }
+                })
+                .catch(error => {
+                    console.error('Error during login:', error);
+                    alert('An error occurred during login.');
                 });
         });
     </script>

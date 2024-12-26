@@ -16,18 +16,14 @@ use App\Http\Controllers\StudentController;
 |
 */
 
-// Route::post('/login', [AuthController::class, 'login']);
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('register', 'register');
     Route::post('logout', 'logout');
 
-    Route::get('students', [StudentController::class, 'listStudent']);
-    Route::post('form-student/{action}/{student?}', [StudentController::class, 'formStudent']);
-    Route::delete('students/{student}', [StudentController::class, 'destroy']);
+    Route::get('students', [StudentController::class, 'index']);
+    Route::post('students', [StudentController::class, 'store']); 
+    Route::get('students/{id}', [StudentController::class, 'show']);
+    Route::put('students/{id}', [StudentController::class, 'update']);
+    Route::delete('students/{id}', [StudentController::class, 'destroy']);
 });
