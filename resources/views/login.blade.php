@@ -46,15 +46,13 @@
                         password
                     }),
                 })
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
-                    if (data.token) {
-                        console.log('Login successful, token:', data.token);
-                        localStorage.setItem('token', data.token);
-                        window.location.href = 'students.html';
+                    console.log('Response Data:', data);
+                    if (data.authorisation && data.authorisation.token) {
+                        console.log('Login successful, token:', data.authorisation.token);
+                        localStorage.setItem('token', data.authorisation.token);
+                        window.location.href = 'students';
                     } else {
                         console.log('Login failed:', data.message || 'Unknown error');
                         alert(data.message || 'Login failed!');
