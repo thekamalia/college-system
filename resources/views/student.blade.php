@@ -26,7 +26,6 @@
                 </tr>
             </thead>
             <tbody id="studentTableBody">
-                <!-- Rows will be populated here -->
             </tbody>
         </table>
     </div>
@@ -34,10 +33,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'index.html';
-                return;
-            }
+            // if (!token) {
+            //     window.location.href = 'index.html';
+            //     return;
+            // }
 
             const studentTableBody = document.getElementById('studentTableBody');
 
@@ -71,13 +70,11 @@
             fetchStudents();
 
             document.getElementById('registerNewUser').addEventListener('click', () => {
-                // Navigate to a form or modal for adding new users
                 alert('Navigate to the registration form!');
             });
 
             window.editStudent = (id) => {
                 alert(`Edit student with ID: ${id}`);
-                // Implement edit functionality
             };
 
             window.deleteStudent = (id) => {
